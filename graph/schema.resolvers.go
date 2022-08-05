@@ -6,42 +6,61 @@ package graph
 import (
 	"context"
 	"fmt"
-	"math/rand"
 
 	"github.com/jakubnoga/pagila-graphql/graph/generated"
 	"github.com/jakubnoga/pagila-graphql/graph/model"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	todo := &model.Todo{
-		Text: input.Text,
-		ID:   fmt.Sprintf("T%d", rand.Int()),
-		User: &model.User{ID: input.UserID, Name: "user " + input.UserID},
+// Actors is the resolver for the actors field.
+func (r *filmResolver) Actors(ctx context.Context, obj *model.Film) ([]*model.Actor, error) {
+	actors, err := r.ar.FindActorsByFilmId(obj.ID)
+
+	if err != nil {
+		panic(err)
 	}
-	r.todos = append(r.todos, todo)
-	return todo, nil
+
+	result := make([]*model.Actor, len(actors))
+
+	for idx, actor := range actors {
+		result[idx] = actor.GraphModel()
+	}
+
+	return result, nil
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	return r.todos, nil
+// Categories is the resolver for the categories field.
+func (r *filmResolver) Categories(ctx context.Context, obj *model.Film) ([]*model.Category, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
-// User is the resolver for the user field.
-func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
-	return &model.User{ID: "ABC", Name: "user " + "ABC"}, nil
+// Film is the resolver for the film field.
+func (r *queryResolver) Film(ctx context.Context, title string) (*model.Film, error) {
+	film, err := r.fr.GetFilmsByTitle(title)
+
+	return film.GraphModel(), err
 }
 
-// Mutation returns generated.MutationResolver implementation.
-func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
+// Films is the resolver for the films field.
+func (r *queryResolver) Films(ctx context.Context) ([]*model.Film, error) {
+	var result []*model.Film
+	films, err := r.fr.GetFilms()
+
+	if err != nil {
+		return result, err
+	}
+
+	for _, film := range films {
+		result = append(result, film.GraphModel())
+	}
+
+	return result, nil
+}
+
+// Film returns generated.FilmResolver implementation.
+func (r *Resolver) Film() generated.FilmResolver { return &filmResolver{r} }
 
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
-// Todo returns generated.TodoResolver implementation.
-func (r *Resolver) Todo() generated.TodoResolver { return &todoResolver{r} }
-
-type mutationResolver struct{ *Resolver }
+type filmResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
-type todoResolver struct{ *Resolver }

@@ -7,11 +7,14 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/jakubnoga/pagila-graphql/actors"
+	"github.com/jakubnoga/pagila-graphql/films"
 	"github.com/jakubnoga/pagila-graphql/graph"
 	"github.com/jakubnoga/pagila-graphql/graph/generated"
 )
 
 const defaultPort = "8080"
+const dsn = "host=localhost user=postgres password=123456 dbname=postgres port=5432"
 
 func main() {
 	port := os.Getenv("PORT")
@@ -19,7 +22,11 @@ func main() {
 		port = defaultPort
 	}
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	filmsRepository := films.NewFilmsPostgresRepository(dsn)
+	actorsRepository := actors.NewActorsPostgresRepository(dsn)
+	resolver := graph.NewResolver(filmsRepository, actorsRepository)
+
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &resolver}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)

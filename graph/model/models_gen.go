@@ -2,19 +2,85 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+import (
+	"fmt"
+	"io"
+	"strconv"
+)
+
+type Actor struct {
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
-}
-
-type User struct {
-	ID   string `json:"id"`
+type Category struct {
 	Name string `json:"name"`
+}
+
+type Film struct {
+	ID                 string      `json:"id"`
+	Title              string      `json:"title"`
+	Description        string      `json:"description"`
+	ReleaseYear        int         `json:"releaseYear"`
+	LanguageID         string      `json:"languageId"`
+	OriginalLanguageID string      `json:"originalLanguageId"`
+	RentalDuration     int         `json:"rentalDuration"`
+	RentalRate         int         `json:"rentalRate"`
+	Length             int         `json:"length"`
+	ReplacementCost    int         `json:"replacementCost"`
+	Rating             MPAARating  `json:"rating"`
+	SpecialFeatures    []string    `json:"specialFeatures"`
+	Actors             []*Actor    `json:"actors"`
+	Categories         []*Category `json:"categories"`
+}
+
+type Language struct {
+	Name string `json:"name"`
+}
+
+type MPAARating string
+
+const (
+	MPAARatingG    MPAARating = "G"
+	MPAARatingPg   MPAARating = "PG"
+	MPAARatingPg13 MPAARating = "PG_13"
+	MPAARatingR    MPAARating = "R"
+	MPAARatingNc17 MPAARating = "NC_17"
+)
+
+var AllMPAARating = []MPAARating{
+	MPAARatingG,
+	MPAARatingPg,
+	MPAARatingPg13,
+	MPAARatingR,
+	MPAARatingNc17,
+}
+
+func (e MPAARating) IsValid() bool {
+	switch e {
+	case MPAARatingG, MPAARatingPg, MPAARatingPg13, MPAARatingR, MPAARatingNc17:
+		return true
+	}
+	return false
+}
+
+func (e MPAARating) String() string {
+	return string(e)
+}
+
+func (e *MPAARating) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = MPAARating(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid MPAARating", str)
+	}
+	return nil
+}
+
+func (e MPAARating) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
