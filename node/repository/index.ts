@@ -25,16 +25,7 @@ async function getFilm(db: Client, title: string): Promise<FilmModel> {
     film_id, 
     title, 
     description, 
-    release_year, 
-    language_id, 
-    original_language_id, 
-    rental_duration, 
-    rental_rate, 
-    length, 
-    replacement_cost, 
-    rating, 
-    last_update, 
-    special_features 
+    length 
   FROM film 
   WHERE title = $1::text;`,
     [title]
@@ -67,21 +58,12 @@ async function getFilms(db: Client, first: number): Promise<FilmModel[]> {
   const result = await db.query(
     `
     SELECT 
-    film_id, 
-    title, 
-    description, 
-    release_year, 
-    language_id, 
-    original_language_id, 
-    rental_duration, 
-    rental_rate, 
-    length, 
-    replacement_cost, 
-    rating, 
-    last_update, 
-    special_features 
-  FROM film 
-  LIMIT $1::int`,
+      film_id, 
+      title, 
+      description, 
+      length 
+    FROM film 
+    LIMIT $1::int`,
     [first]
   );
 

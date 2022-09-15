@@ -14,11 +14,12 @@ const typeDefs = readFileSync("./schema.graphql", "utf8");
       films: (_, args) => repo.getFilms(args.first),
     },
     Film: {
-      actors: async (parent) => repo.getActors(parent.film_id),
+      id: (parent) => String(parent.film_id),
+      actors: (parent) => repo.getActors(parent.film_id),
     },
     Actor: {
-      firstName: (parent) => parent.first_name,
-      lastName: (parent) => parent.last_name,
+      firstName: ({ first_name }) => first_name,
+      lastName: ({ last_name }) => last_name,
     },
     Mutation: {
       changeLength: (_, args) =>
