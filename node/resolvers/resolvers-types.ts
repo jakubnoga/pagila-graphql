@@ -21,41 +21,14 @@ export type Actor = {
   lastName: Scalars['String'];
 };
 
-export type Category = {
-  __typename?: 'Category';
-  name: Scalars['String'];
-};
-
 export type Film = {
   __typename?: 'Film';
   actors: Array<Actor>;
-  categories: Array<Category>;
   description: Scalars['String'];
   id: Scalars['ID'];
-  languageId: Scalars['ID'];
   length: Scalars['Int'];
-  originalLanguageId: Scalars['ID'];
-  rating: MpaaRating;
-  releaseYear: Scalars['Int'];
-  rentalDuration: Scalars['Int'];
-  rentalRate: Scalars['Int'];
-  replacementCost: Scalars['Int'];
-  specialFeatures: Array<Scalars['String']>;
   title: Scalars['String'];
 };
-
-export type Language = {
-  __typename?: 'Language';
-  name: Scalars['String'];
-};
-
-export enum MpaaRating {
-  G = 'G',
-  Nc_17 = 'NC_17',
-  Pg = 'PG',
-  Pg_13 = 'PG_13',
-  R = 'R'
-}
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -84,8 +57,7 @@ export type QueryFilmsArgs = {
   first: Scalars['Int'];
 };
 
-export type WithIndex<TObject> = TObject & Record<string, any>;
-export type ResolversObject<TObject> = WithIndex<TObject>;
+
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
@@ -153,83 +125,57 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 ) => TResult | Promise<TResult>;
 
 /** Mapping between all available schema types and the resolvers types */
-export type ResolversTypes = ResolversObject<{
+export type ResolversTypes = {
   Actor: ResolverTypeWrapper<ActorModel>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  Category: ResolverTypeWrapper<Category>;
   Film: ResolverTypeWrapper<FilmModel>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  Language: ResolverTypeWrapper<Language>;
-  MPAARating: MpaaRating;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
-}>;
+};
 
 /** Mapping between all available schema types and the resolvers parents */
-export type ResolversParentTypes = ResolversObject<{
+export type ResolversParentTypes = {
   Actor: ActorModel;
   Boolean: Scalars['Boolean'];
-  Category: Category;
   Film: FilmModel;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
-  Language: Language;
   Mutation: {};
   Query: {};
   String: Scalars['String'];
-}>;
+};
 
-export type ActorResolvers<ContextType = any, ParentType extends ResolversParentTypes['Actor'] = ResolversParentTypes['Actor']> = ResolversObject<{
+export type ActorResolvers<ContextType = any, ParentType extends ResolversParentTypes['Actor'] = ResolversParentTypes['Actor']> = {
   firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
+};
 
-export type CategoryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Category'] = ResolversParentTypes['Category']> = ResolversObject<{
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type FilmResolvers<ContextType = any, ParentType extends ResolversParentTypes['Film'] = ResolversParentTypes['Film']> = ResolversObject<{
+export type FilmResolvers<ContextType = any, ParentType extends ResolversParentTypes['Film'] = ResolversParentTypes['Film']> = {
   actors?: Resolver<Array<ResolversTypes['Actor']>, ParentType, ContextType>;
-  categories?: Resolver<Array<ResolversTypes['Category']>, ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  languageId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   length?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  originalLanguageId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  rating?: Resolver<ResolversTypes['MPAARating'], ParentType, ContextType>;
-  releaseYear?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  rentalDuration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  rentalRate?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  replacementCost?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  specialFeatures?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
+};
 
-export type LanguageResolvers<ContextType = any, ParentType extends ResolversParentTypes['Language'] = ResolversParentTypes['Language']> = ResolversObject<{
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   changeLength?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType, RequireFields<MutationChangeLengthArgs, 'newLength' | 'title'>>;
-}>;
+};
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   film?: Resolver<ResolversTypes['Film'], ParentType, ContextType, RequireFields<QueryFilmArgs, 'title'>>;
   films?: Resolver<Array<ResolversTypes['Film']>, ParentType, ContextType, RequireFields<QueryFilmsArgs, 'first'>>;
-}>;
+};
 
-export type Resolvers<ContextType = any> = ResolversObject<{
+export type Resolvers<ContextType = any> = {
   Actor?: ActorResolvers<ContextType>;
-  Category?: CategoryResolvers<ContextType>;
   Film?: FilmResolvers<ContextType>;
-  Language?: LanguageResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-}>;
+};
 

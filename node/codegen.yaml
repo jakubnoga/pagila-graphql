@@ -2,7 +2,7 @@ schema: schema.graphql
 generates:
   ./resolvers/resolvers-types.ts:
     config:
-      useIndexSignature: true
+      # useIndexSignature: true
       mappers:
         Film: ../model#FilmModel
         Actor: ../model#ActorModel
