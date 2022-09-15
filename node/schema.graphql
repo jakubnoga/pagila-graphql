@@ -1,0 +1,21 @@
+type Film {
+  id: ID!
+  title: String!
+  description: String!
+  length: Int!
+  actors: [Actor!]!
+}
+
+type Actor {
+  firstName: String!
+  lastName: String!
+}
+
+type Query {
+  film(title: String!): Film!
+  films(first: Int!): [Film!]!
+}
+
+type Mutation {
+  changeLength(title: String!, newLength: Int!): Int
+}

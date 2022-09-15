@@ -1,0 +1,11 @@
+schema: schema.graphql
+generates:
+  ./resolvers/resolvers-types.ts:
+    config:
+      useIndexSignature: true
+      mappers:
+        Film: ../model#FilmModel
+        Actor: ../model#ActorModel
+    plugins:
+      - typescript
+      - typescript-resolvers
